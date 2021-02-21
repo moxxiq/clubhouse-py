@@ -32,6 +32,14 @@ try:
 except ImportError:
     RTC = None
 
+
+# create debug argument
+import argparse
+import inspect
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug")
+
+
 def set_interval(interval):
     """ (int) -> decorator
 
@@ -334,6 +342,16 @@ def user_authentication(client):
 
     return
 
+def cli_methods(client):
+    print("Choose a method to test from")
+    print(*dir(client), sep='\n', end='\n\n')
+
+    method = input()
+    method_args = inspect.signature(getattr(client, method))
+    args = [a.strip() for a in input(f"Enter comma separeted arguments {method_args}:\n").split(',')]
+    result = getattr(client, method)(*args)
+    print(f"Method client.{method} executed with parameters {args} result is: \n{result}\n")
+
 def main():
     """
     Initialize required configurations, start with some basic stuff.
@@ -364,7 +382,11 @@ def main():
         if not _check['user_profile'].get("username"):
             process_onboarding(client)
 
-        chat_main(client)
+        args = parser.parse_args()
+        if args.debug == '1':
+            cli_methods(client)
+        else:
+            chat_main(client)
     else:
         client = Clubhouse()
         user_authentication(client)

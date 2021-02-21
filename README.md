@@ -72,6 +72,11 @@ if __name__ == "__main__":
 $ python3 cli.py
 ```
 
+* For single method usage type
+```sh
+$ python3 cli.py --debug 1
+```
+
 ## Supported features
 
 ### Pre-authentication
